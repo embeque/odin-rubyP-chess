@@ -40,16 +40,16 @@ class King
   end
 end
 
-board = [
-  [nil, nil, nil, nil, nil, nil, nil, nil],
-  [1, nil, nil, nil, nil, nil, nil, nil],
-  [nil, nil, nil, nil, nil, 1, nil, nil],
-  [nil, nil, nil, nil, nil, nil, nil, nil],
-  [nil, nil, nil, King, nil, nil, nil, nil],
-  [nil, nil, nil, nil, nil, nil, nil, nil],
-  [nil, nil, nil, nil, nil, 1, nil, nil],
-  [nil, nil, nil, nil, nil, nil, nil, nil]
-]
+# board = [
+#   [nil, nil, nil, nil, nil, nil, nil, nil],
+#   [1, nil, nil, nil, nil, nil, nil, nil],
+#   [nil, nil, nil, nil, nil, 1, nil, nil],
+#   [nil, nil, nil, nil, nil, nil, nil, nil],
+#   [nil, nil, nil, King, nil, nil, nil, nil],
+#   [nil, nil, nil, nil, nil, nil, nil, nil],
+#   [nil, nil, nil, nil, nil, 1, nil, nil],
+#   [nil, nil, nil, nil, nil, nil, nil, nil]
+# ]
 # default position of king is available
 
-print King.new.all_moves(board)
+# print King.new.moves(board)

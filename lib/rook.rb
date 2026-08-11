@@ -19,7 +19,7 @@ class Rook
     "\u265c"
   end
 
-  def all_moves(board, pos = position)
+  def moves(board, pos = position)
     # position -> d4
     result = []
     move_diffs = [[0, -1], [0, 1], [-1, 0], [1, 0]]
@@ -41,15 +41,15 @@ class Rook
   end
 end
 
-board = [
-  [nil, nil, nil, nil, nil, nil, nil, nil],
-  [1, nil, nil, nil, nil, nil, nil, nil],
-  [nil, nil, nil, nil, nil, 1, nil, nil],
-  [nil, nil, nil, nil, nil, nil, nil, nil],
-  [nil, nil, 1, Rook, nil, nil, nil, nil],
-  [nil, nil, nil, 1, nil, nil, nil, nil],
-  [nil, nil, nil, nil, nil, 1, nil, nil],
-  [nil, nil, nil, nil, nil, nil, nil, nil]
-]
+# board = [
+#   [nil, nil, nil, nil, nil, nil, nil, nil],
+#   [1, nil, nil, nil, nil, nil, nil, nil],
+#   [nil, nil, nil, nil, nil, 1, nil, nil],
+#   [nil, nil, nil, nil, nil, nil, nil, nil],
+#   [nil, nil, 1, Rook, nil, nil, nil, nil],
+#   [nil, nil, nil, 1, nil, nil, nil, nil],
+#   [nil, nil, nil, nil, nil, 1, nil, nil],
+#   [nil, nil, nil, nil, nil, nil, nil, nil]
+# ]
 
-print Rook.new('d4').all_moves(board)
+# print Rook.new('d4').all_moves(board)

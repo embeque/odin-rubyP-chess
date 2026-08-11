@@ -41,15 +41,15 @@ class Bishop
   end
 end
 
-board = [
-  [nil, nil, nil, nil, nil, nil, nil, nil],
-  [1, nil, nil, nil, nil, nil, nil, nil],
-  [nil, nil, nil, nil, nil, 1, nil, nil],
-  [nil, nil, nil, nil,    nil, nil, nil, nil],
-  [nil, nil, nil, Bishop, nil, nil, nil, nil],
-  [nil, nil, nil, nil,    nil, nil, nil, nil],
-  [nil, nil, nil, nil, nil, 1, nil, nil],
-  [nil, nil, nil, nil, nil, nil, nil, nil]
-]
+# board = [
+#   [nil, nil, nil, nil, nil, nil, nil, nil],
+#   [1, nil, nil, nil, nil, nil, nil, nil],
+#   [nil, nil, nil, nil, nil, 1, nil, nil],
+#   [nil, nil, nil, nil,    nil, nil, nil, nil],
+#   [nil, nil, nil, Bishop, nil, nil, nil, nil],
+#   [nil, nil, nil, nil,    nil, nil, nil, nil],
+#   [nil, nil, nil, nil, nil, 1, nil, nil],
+#   [nil, nil, nil, nil, nil, nil, nil, nil]
+# ]
 
-print Bishop.new('d4').moves(board)
+# print Bishop.new('d4').moves(board)

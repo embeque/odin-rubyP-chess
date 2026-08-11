@@ -38,15 +38,15 @@ class Knight
   end
 end
 
-board = [
-  [nil, nil, nil, nil, nil, nil, nil, nil],
-  [1, nil, nil, nil, nil, nil, nil, nil],
-  [nil, nil, 1, nil, nil, nil, nil, nil],
-  [nil, nil, nil, nil, nil, 1, nil, nil],
-  [nil, nil, nil, Knight, nil, nil, nil, nil],
-  [nil, 1, nil, nil, nil, nil, nil, nil],
-  [nil, nil, nil, nil, 1, nil, nil, nil],
-  [nil, nil, nil, nil, nil, nil, nil, nil]
-]
+# board = [
+#   [nil, nil, nil, nil, nil, nil, nil, nil],
+#   [1, nil, nil, nil, nil, nil, nil, nil],
+#   [nil, nil, 1, nil, nil, nil, nil, nil],
+#   [nil, nil, nil, nil, nil, 1, nil, nil],
+#   [nil, nil, nil, Knight, nil, nil, nil, nil],
+#   [nil, 1, nil, nil, nil, nil, nil, nil],
+#   [nil, nil, nil, nil, 1, nil, nil, nil],
+#   [nil, nil, nil, nil, nil, nil, nil, nil]
+# ]
 
-print Knight.new('d4').all_moves(board)
+# print Knight.new('d4').all_moves(board)

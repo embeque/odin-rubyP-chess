@@ -25,6 +25,8 @@ class Pawn
   end
 
   def moves(board, pos = position) # for en passant we can check the 'ChessBoard' class variable if it contain the same position as calculated then legal move and if nil or not the same position then not legal
+    # also handle pawn promotion
+
     # position -> d4
     result = []
     move_diffs = [[direction, 0]]
@@ -57,17 +59,17 @@ class Pawn
   end
 end
 
-board = [
-  [nil, nil, nil, nil, nil, nil, nil, nil],
-  [1, nil, nil, nil, nil, nil, nil, nil],
-  [nil, nil, nil, nil, nil, 1, nil, nil],
-  [nil, nil, nil, nil, nil, nil, nil, nil],
-  [nil, nil, nil, nil, nil, nil, nil, nil],
-  [nil, nil, nil, nil, Pawn, nil, nil, nil],
-  [nil, nil, nil, Pawn, nil, 1, nil, nil],
-  [nil, nil, nil, nil, nil, nil, nil, nil]
-]
+# board = [
+#   [nil, nil, nil, nil, nil, nil, nil, nil],
+#   [1, nil, nil, nil, nil, nil, nil, nil],
+#   [nil, nil, nil, nil, nil, 1, nil, nil],
+#   [nil, nil, nil, nil, nil, nil, nil, nil],
+#   [nil, nil, nil, nil, nil, nil, nil, nil],
+#   [nil, nil, nil, nil, Pawn, nil, nil, nil],
+#   [nil, nil, nil, Pawn, nil, 1, nil, nil],
+#   [nil, nil, nil, nil, nil, nil, nil, nil]
+# ]
 
-print Pawn.new('d2').moves(board)
+# print Pawn.new('d2').moves(board)
 
 # i can give a pawn position error when placed on first rank for white and 8th rank for black

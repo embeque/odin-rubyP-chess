@@ -20,7 +20,7 @@ class Queen
     "\u265b"
   end
 
-  def all_moves(board, pos = position)
+  def moves(board, pos = position)
     # position -> d4
     result = []
     move_diffs = [[1, -1], [1, 0], [1, 1], [0, -1], [0, 1], [-1, -1], [-1, 0], [-1, 1]]
@@ -42,15 +42,15 @@ class Queen
   end
 end
 
-board = [
-  [nil, nil, nil, nil, nil, nil, nil, nil],
-  [1, nil, nil, nil, nil, nil, 1, nil],
-  [nil, 1, nil, 1, nil, nil, nil, nil],
-  [nil, nil, 1, nil, nil, nil, nil, nil],
-  [nil, nil, 1, Queen, 1, nil, nil, nil],
-  [nil, nil, 1, 1, 1, nil, nil, nil],
-  [nil, 1, nil, nil, nil, nil, nil, nil],
-  [nil, nil, nil, nil, nil, nil, 1, nil]
-]
+# board = [
+#   [nil, nil, nil, nil, nil, nil, nil, nil],
+#   [1, nil, nil, nil, nil, nil, 1, nil],
+#   [nil, 1, nil, 1, nil, nil, nil, nil],
+#   [nil, nil, 1, nil, nil, nil, nil, nil],
+#   [nil, nil, 1, Queen, 1, nil, nil, nil],
+#   [nil, nil, 1, 1, 1, nil, nil, nil],
+#   [nil, 1, nil, nil, nil, nil, nil, nil],
+#   [nil, nil, nil, nil, nil, nil, 1, nil]
+# ]
 
-print Queen.new('d4').all_moves(board)
+# print Queen.new('d4').all_moves(board)
