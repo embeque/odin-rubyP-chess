@@ -13,7 +13,7 @@ class ChessBoard
 
   def initialize
     @board = Array.new(8) { Array.new(8, nil) }
-    set_fen
+    # set_fen
     @turn = 0
     @selected = nil
 
@@ -22,6 +22,13 @@ class ChessBoard
     @enpassant = nil
     @draw_counter = 0
     @moves = 1
+  end
+
+  def change_fen(default = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR')
+    while (mat = default.match(/[2-8]/))
+      default.sub!(mat[0], '1' * mat[0].to_i)
+    end
+    default
   end
 
   def play

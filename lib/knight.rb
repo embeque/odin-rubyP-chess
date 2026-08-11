@@ -8,6 +8,9 @@ class Knight
   def initialize(position, black: false)
     @black = black
     @position = position
+
+    @symbol = 'N'
+    @symbol = 'n' if black
   end
 
   def draw
@@ -17,7 +20,7 @@ class Knight
   end
 
   # will be called by `play move` function
-  def all_moves(pos = position)
+  def moves(board, pos = position)
     # position -> d4
     col, row = pos.chars
     result = []
@@ -25,6 +28,9 @@ class Knight
     move_diffs.each do |diff|
       i = row.to_i + diff[0]
       j = column_name(col.ord + diff[1])
+
+      next unless board[index(i)][index(j)].nil?
+
       result << (j + i.to_s) if valid?(i) && valid?(j)
     end
     result # an array with all valid moves on board
@@ -32,5 +38,15 @@ class Knight
   end
 end
 
-# knight = Knight.new('b1')
-# print knight.all_moves
+board = [
+  [nil, nil, nil, nil, nil, nil, nil, nil],
+  [1, nil, nil, nil, nil, nil, nil, nil],
+  [nil, nil, 1, nil, nil, nil, nil, nil],
+  [nil, nil, nil, nil, nil, 1, nil, nil],
+  [nil, nil, nil, Knight, nil, nil, nil, nil],
+  [nil, 1, nil, nil, nil, nil, nil, nil],
+  [nil, nil, nil, nil, 1, nil, nil, nil],
+  [nil, nil, nil, nil, nil, nil, nil, nil]
+]
+
+print Knight.new('d4').all_moves(board)

@@ -7,8 +7,11 @@ class King
 
   def initialize(position = 'e1', black: false)
     @black = black
-    position = 'e8' if black
+    position = 'e8' if black && position == 'e1'
     @position = position
+
+    @symbol = 'K'
+    @symbol = 'k' if black
   end
 
   def draw
@@ -18,7 +21,7 @@ class King
   end
 
   # will be called by `play move` function
-  def all_moves(pos = position)
+  def moves(board, pos = position)
     # position -> d4
     result = []
     move_diffs = [[1, -1], [1, 0], [1, 1], [0, -1], [0, 1], [-1, -1], [-1, 0], [-1, 1]]
@@ -28,6 +31,7 @@ class King
       j = column_name(col.ord + diff[1])
 
       next unless valid?(i) && valid?(j)
+      next unless board[index(i)][index(j)].nil?
 
       result << (j + i.to_s)
     end
@@ -36,4 +40,16 @@ class King
   end
 end
 
-print King.new.all_moves
+board = [
+  [nil, nil, nil, nil, nil, nil, nil, nil],
+  [1, nil, nil, nil, nil, nil, nil, nil],
+  [nil, nil, nil, nil, nil, 1, nil, nil],
+  [nil, nil, nil, nil, nil, nil, nil, nil],
+  [nil, nil, nil, King, nil, nil, nil, nil],
+  [nil, nil, nil, nil, nil, nil, nil, nil],
+  [nil, nil, nil, nil, nil, 1, nil, nil],
+  [nil, nil, nil, nil, nil, nil, nil, nil]
+]
+# default position of king is available
+
+print King.new.all_moves(board)

@@ -9,6 +9,9 @@ class Queen
     @black = black
     position = 'd8' if black
     @position = position
+
+    @symbol = 'Q'
+    @symbol = 'q'
   end
 
   def draw
@@ -17,7 +20,7 @@ class Queen
     "\u265b"
   end
 
-  def all_moves(pos = position)
+  def all_moves(board, pos = position)
     # position -> d4
     result = []
     move_diffs = [[1, -1], [1, 0], [1, 1], [0, -1], [0, 1], [-1, -1], [-1, 0], [-1, 1]]
@@ -30,6 +33,7 @@ class Queen
         i = row.to_i + diff[0]
         j = column_name(col.ord + diff[1])
         break unless valid?(i) && valid?(j)
+        break unless board[index(i)][index(j)].nil?
 
         result << (j + i.to_s)
       end
@@ -38,4 +42,15 @@ class Queen
   end
 end
 
-print Queen.new('d4').all_moves
+board = [
+  [nil, nil, nil, nil, nil, nil, nil, nil],
+  [1, nil, nil, nil, nil, nil, 1, nil],
+  [nil, 1, nil, 1, nil, nil, nil, nil],
+  [nil, nil, 1, nil, nil, nil, nil, nil],
+  [nil, nil, 1, Queen, 1, nil, nil, nil],
+  [nil, nil, 1, 1, 1, nil, nil, nil],
+  [nil, 1, nil, nil, nil, nil, nil, nil],
+  [nil, nil, nil, nil, nil, nil, 1, nil]
+]
+
+print Queen.new('d4').all_moves(board)

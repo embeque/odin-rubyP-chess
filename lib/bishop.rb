@@ -7,6 +7,9 @@ class Bishop
   def initialize(position, black: false)
     @black = black
     @position = position
+
+    @symbol = 'B'
+    @symbol = 'b' if black
   end
 
   def draw
@@ -16,7 +19,7 @@ class Bishop
   end
 
   # will be called by `play move` function
-  def all_moves(pos = position)
+  def moves(board, pos = position)
     # position -> d4
     result = []
     move_diffs = [[1, 1], [-1, -1], [1, -1], [-1, 1]]
@@ -28,6 +31,7 @@ class Bishop
         i = row.to_i + diff[0]
         j = column_name(col.ord + diff[1])
         break unless valid?(i) && valid?(j)
+        break unless board[index(i)][index(j)].nil?
 
         result << (j + i.to_s)
       end
@@ -37,4 +41,15 @@ class Bishop
   end
 end
 
-print Bishop.new('d4').all_moves
+board = [
+  [nil, nil, nil, nil, nil, nil, nil, nil],
+  [1, nil, nil, nil, nil, nil, nil, nil],
+  [nil, nil, nil, nil, nil, 1, nil, nil],
+  [nil, nil, nil, nil,    nil, nil, nil, nil],
+  [nil, nil, nil, Bishop, nil, nil, nil, nil],
+  [nil, nil, nil, nil,    nil, nil, nil, nil],
+  [nil, nil, nil, nil, nil, 1, nil, nil],
+  [nil, nil, nil, nil, nil, nil, nil, nil]
+]
+
+print Bishop.new('d4').moves(board)

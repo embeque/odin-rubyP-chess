@@ -1,4 +1,3 @@
-require_relative 'lib/chess'
+require_relative 'lib/chessboard'
 
-game = Chess.new
-game.menu
+puts ChessBoard.new.change_fen
