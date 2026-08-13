@@ -31,7 +31,10 @@ class Bishop
         i = row.to_i + diff[0]
         j = column_name(col.ord + diff[1])
         break unless valid?(i) && valid?(j)
-        break unless board[index(i)][index(j)].nil?
+
+        piece = board[index(i)][index(j)]
+        result << (j + i.to_s) if opponent(self, piece)
+        break unless piece.nil?
 
         result << (j + i.to_s)
       end

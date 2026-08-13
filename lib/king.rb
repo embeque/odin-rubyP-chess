@@ -31,7 +31,10 @@ class King
       j = column_name(col.ord + diff[1])
 
       next unless valid?(i) && valid?(j)
-      next unless board[index(i)][index(j)].nil?
+
+      piece = board[index(i)][index(j)]
+      result << (j + i.to_s) if opponent(self, piece)
+      next unless piece.nil?
 
       result << (j + i.to_s)
     end

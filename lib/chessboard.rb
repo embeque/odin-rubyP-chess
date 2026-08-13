@@ -16,17 +16,20 @@ class ChessBoard
 
   def initialize
     @board = Array.new(8) { Array.new(8, nil) }
-    @board[7][4] = Pawn.new('e1')
-    # set_fen
+    set_default_game
     @turn = 0
     # @selected = nil
     @win = nil
 
     # fen things
     @castling = 'KQkq'
-    @enpassant = nil
+    @@enpassant = nil
     @draw_counter = 0
     @moves = 1
+  end
+
+  def self.enpassant
+    @@enpassant
   end
 
   def change_fen(default = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR')
@@ -42,14 +45,40 @@ class ChessBoard
 
     case choice
     when 1
-      # set_default_game
       play_with_person
     when 2
-      set_default_game
       play_with_computer
     when 3
       load_game
       play_with_person
+    end
+  end
+
+  def set_default_game
+    default_fen = change_fen
+    set_board_from_fen(default_fen)
+    # other things are automatically initialized
+  end
+
+  def set_board_from_fen(fen)
+    rows = fen.split('/')
+    pieces = [Rook, Bishop, Knight, Queen, King, Pawn]
+
+    rows.each_with_index do |row, ri|
+      row.chars.each_with_index do |elem, ci|
+        position = (ci + 97).chr + (8 - ri).to_s
+        pieces.each do |piece|
+          white = piece.new(position)
+          black = piece.new(position, black: true)
+          if white.symbol == elem
+            @board[ri][ci] = white
+            puts "white elem created on #{position} of piece #{piece}"
+          elsif black.symbol == elem
+            @board[ri][ci] = black
+            puts "black elem created on #{position} of piece #{piece}"
+          end
+        end
+      end
     end
   end
 
@@ -69,7 +98,8 @@ class ChessBoard
       system 'clear'
       draw_board
       person_move
-      # change_turn
+      @moves += 1
+      change_turn
       if @win
         game_over
         announce_winner
@@ -88,6 +118,8 @@ class ChessBoard
       end
       break if piece.black == false && turn.zero? # white's turn
       break if piece.black == true && turn == 1   # black's turn
+
+      puts 'select your own piece ...'
     end
     move_piece(piece)
   end
@@ -98,17 +130,19 @@ class ChessBoard
 
   def select_piece
     choice = ask("Give the position of piece like d1 or enter 'exit' to stop playing")
+    # stop playing -> save and exit / don't save and exit
     stop_playing if choice == 'exit'
     unless choice_valid?(choice)
       puts 'Invalid choice, try again'
       return select_piece
     end
-    row, col = choice.chars.reverse
-    board[index(row.to_i)][index(col)]
+    row, col = get_cordinates(choice)
+    board[row][col]
   end
 
   def move_piece(piece)
-    choice = ask("Give the move for piece on #{piece.position}")
+    position = piece.position
+    choice = ask("Give the move for piece on #{position}")
     unless choice_valid?(choice)
       puts 'Invalid move, try again'
       return move_piece(piece)
@@ -117,7 +151,69 @@ class ChessBoard
       puts 'Illegal Move, try selecting another piece'
       return person_move
     end
+    enpassant_rules(piece, choice) if piece.is_a?(Pawn) && ChessBoard.enpassant == choice
+
     make_move(piece, choice)
+
+    return unless piece.is_a? Pawn
+
+    pawn_rules(position, piece, choice)
+    @draw_counter = 0
+  end
+
+  def enpassant_rules(piece, choice)
+    takepos = get_cordinates(choice)
+    if piece.black == false
+      takepos[0] += 1
+    else
+      takepos[0] -= 1
+    end
+    row, col = takepos
+    @board[row][col] = nil
+    @@enpassant = nil
+  end
+
+  def pawn_rules(position, piece, choice)
+    # calculating when_enpassant logic
+    if position.include?('2') && choice.include?('4')
+      paspos = "#{position[0]}3"
+      check_enpassant(piece, paspos)
+    elsif position.include?('7') && choice.include?('5')
+      paspos = "#{position[0]}6"
+      check_enpassant(piece, paspos)
+    elsif choice.include?('1')
+      promote(choice, black = true)
+    elsif choice.include?('8') # position[1] == '7' # i don't think this is that much useful
+      promote(choice, black = false)
+    end
+  end
+
+  def promote(choice, black)
+    select = ask('To what you want to, promote your pawn? (r for rook), (n for knight), (b for bishop), (q for queen)').downcase
+    promo = Queen
+    case select
+    when 'r'
+      promo = Rook
+    when 'b'
+      promo = Bishop
+    when 'n'
+      promo = Knight
+    else
+      puts 'promoting to queen ...'
+    end
+
+    row, col = get_cordinates(choice)
+    @board[row][col] = promo.new(choice, black: black)
+  end
+
+  def check_enpassant(piece, paspos)
+    row, col = get_cordinates(piece.position)
+    left = board[row][col - 1]
+    @@enpassant = paspos if left.is_a?(Pawn) && opponent(left, piece)
+    right = board[row][col + 1]
+    return unless right.is_a?(Pawn) && opponent(right, piece)
+
+    @@enpassant = paspos
   end
 
   def make_move(piece, choice)
@@ -129,15 +225,14 @@ class ChessBoard
     piece.position = choice
   end
 
-  def get_cordinates(string)
-    row, col = string.chars.reverse
-    [index(row.to_i), index(col)]
+  def change_turn
+    @turn = 1 - turn
   end
 
   def draw_board
-    tab_space_numbers
+    tab_space_letters
     1.upto(8) do |row|
-      print row, "\t"
+      print 9 - row, "\t"
       board[row - 1].each do |value|
         if value.nil?
           print '-', "\t"
@@ -157,9 +252,9 @@ class ChessBoard
     puts nil
   end
 
-  def tab_space_numbers
-    1.upto(8) do |num|
-      print "\t", num
+  def tab_space_letters
+    97.upto(104) do |num|
+      print "\t", num.chr
     end
     puts nil
   end
@@ -192,10 +287,6 @@ end
 #         puts 'Invalid Option, try again with valid option'
 #       end
 #     end
-#   end
-
-#   def change_turn
-#     @turn = 1 - turn
 #   end
 
 #   def play_move(from, to)

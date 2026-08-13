@@ -1,5 +1,5 @@
 require_relative 'chess'
-
+require_relative 'chessboard'
 class Pawn
   attr_accessor :double, :black, :position, :direction
 
@@ -7,7 +7,7 @@ class Pawn
 
   def initialize(position, black: false)
     @direction = 1
-    @direction = -1, 0 if black
+    @direction = -1 if black
 
     @symbol = 'P'
     @symbol = 'p' if black
@@ -40,6 +40,7 @@ class Pawn
       j = column_name(j.ord + diff[1])
 
       next unless valid?(i) && valid?(j)
+      break unless board[index(i)][index(j)].nil?
 
       result << (j + i.to_s)
     end
@@ -50,10 +51,18 @@ class Pawn
       j = column_name(col.ord + diff[1])
 
       next unless valid?(i) && valid?(j)
+
+      result << (j + i.to_s) if ChessBoard.enpassant == j + i.to_s
       next if board[index(i)][index(j)].nil? # && enpassant
 
       result << (j + i.to_s)
     end
+
+    # eligible = lambda do |char|
+    #   char.include?('8')
+    # end
+    # promote if result.all?(eligible)
+
     result # an array with all valid moves on board
     # but how to handle if there is another piece
   end
@@ -70,6 +79,6 @@ end
 #   [nil, nil, nil, nil, nil, nil, nil, nil]
 # ]
 
-# print Pawn.new('d2').moves(board)
+# print Pawn.new('d8', black: true).moves(board)
 
 # i can give a pawn position error when placed on first rank for white and 8th rank for black
