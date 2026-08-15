@@ -8,7 +8,7 @@ require_relative 'rook'
 
 # class of chess
 class ChessBoard
-  attr_accessor :board, :turn, :selected
+  attr_accessor :board, :turn, :selected, :check
 
   # , :castling, :enpassant, :draw_counter, :moves
 
@@ -16,10 +16,11 @@ class ChessBoard
 
   def initialize
     @board = Array.new(8) { Array.new(8, nil) }
-    set_default_game
     @turn = 0
     # @selected = nil
     @win = nil
+    # @check = nil
+    set_default_game
 
     # fen things
     @castling = 'KQkq'
@@ -129,6 +130,8 @@ class ChessBoard
   end
 
   def select_piece
+    puts 'Your king is in check by opponent piece' if checkcheck(!(turn == '0'))
+
     choice = ask("Give the position of piece like d1 or enter 'exit' to stop playing")
     # stop playing -> save and exit / don't save and exit
     stop_playing if choice == 'exit'
@@ -140,6 +143,14 @@ class ChessBoard
     board[row][col]
   end
 
+  def stop_playing
+    choice = ask('press \'save\' to save the game and exit or else it will be exited directly')
+
+    save_game if choice == 'save'
+
+    exit
+  end
+
   def move_piece(piece)
     position = piece.position
     choice = ask("Give the move for piece on #{position}")
@@ -147,10 +158,18 @@ class ChessBoard
       puts 'Invalid move, try again'
       return move_piece(piece)
     end
-    unless piece.moves(board).include?(choice)
+    unless piece.moves(@board).include?(choice)
       puts 'Illegal Move, try selecting another piece'
       return person_move
     end
+
+    game_over if checkmate?(piece.black)
+
+    unless legal_move(piece, choice)
+      person_move
+      return
+    end
+
     enpassant_rules(piece, choice) if piece.is_a?(Pawn) && ChessBoard.enpassant == choice
 
     make_move(piece, choice)
@@ -159,6 +178,80 @@ class ChessBoard
 
     pawn_rules(position, piece, choice)
     @draw_counter = 0
+  end
+
+  def legal_move(piece, choice, debug = true)
+    current_color = piece.black
+    prevpos = piece.position
+    if checkcheck(current_color)
+
+      del_piece = make_move(piece, choice)
+      if checkcheck(current_color)
+        puts 'your move don\' tackle the check, try again' if debug
+        make_move(piece, prevpos)
+        make_move(del_piece, choice) unless del_piece.nil?
+        false
+      else
+        make_move(piece, prevpos)
+        make_move(del_piece, choice) unless del_piece.nil?
+        true
+      end
+    else
+      del_piece = make_move(piece, choice)
+      if checkcheck(current_color)
+        puts 'Illegal move, cause the check to your king'
+        make_move(piece, prevpos)
+        make_move(del_piece, choice) unless del_piece.nil?
+        false
+      else
+        make_move(piece, prevpos)
+        make_move(del_piece, choice) unless del_piece.nil?
+        true
+      end
+    end
+  end
+
+  def checkmate?(color)
+    @board.each do |row|
+      row.each do |piece|
+        next if piece.nil?
+        next unless piece.black == color
+
+        piece.moves(@board).each do |move|
+          return false if legal_move(piece, move, false)
+        end
+      end
+    end
+    true
+  end
+
+  def game_over
+    change_turn
+    puts "Player#{turn + 1} has won with color #{turn == 0 ? 'white' : 'black'}"
+    exit
+  end
+
+  def checkcheck(color)
+    king = kingpos(color)
+    @board.each do |row|
+      row.each do |piece|
+        next if piece.nil?
+
+        if piece.moves(@board).include?(king) && piece.black == !color
+          # puts "Your king is in check by opponent piece on position #{piece.position}"
+          return true
+        end
+      end
+    end
+    false
+  end
+
+  def kingpos(black)
+    @board.each_with_index do |row, ri|
+      row.each_with_index do |piece, ci|
+        return get_position([ri, ci]) if piece.is_a?(King) && piece.black == black
+      end
+    end
   end
 
   def enpassant_rules(piece, choice)
@@ -221,8 +314,10 @@ class ChessBoard
     board[row][col] = nil
 
     row, col = get_cordinates(choice)
+    temp = board[row][col]
     board[row][col] = piece
     piece.position = choice
+    temp
   end
 
   def change_turn

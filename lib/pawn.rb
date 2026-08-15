@@ -1,7 +1,7 @@
 require_relative 'chess'
 require_relative 'chessboard'
 class Pawn
-  attr_accessor :double, :black, :position, :direction
+  attr_accessor :black, :position, :direction
 
   include Chess
 
@@ -14,8 +14,7 @@ class Pawn
 
     @black = black
     @position = position
-    @double = true
-    # @double = true if position.match?('2') || position.match?('7')
+    # @first_move = true if position.match?('2') || position.match?('7')
   end
 
   def draw
@@ -30,10 +29,7 @@ class Pawn
     # position -> d4
     result = []
     move_diffs = [[direction, 0]]
-    if double
-      move_diffs << [direction, 0]
-      @double = false
-    end
+    move_diffs << [direction, 0] if (pos.include?('2') && black == false) || (pos.include?('7') && black == true)
     i, j = pos.chars.reverse
     move_diffs.each do |diff|
       i = i.to_i + diff[0]
